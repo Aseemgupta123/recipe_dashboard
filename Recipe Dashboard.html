@@ -145,6 +145,9 @@ const { useState, useEffect, useRef, useMemo, useCallback } = React;
 const STORAGE_KEY = 'recipe-dashboard-v1';
 const ACTIVE_KEY  = 'recipe-dashboard-active-v1';
 const SEEDS_KEY   = 'recipe-dashboard-seeds-v1';
+const GH_TOKEN_KEY = 'recipe-gh-token';
+const GH_REPO     = 'Aseemgupta123/recipe_dashboard';
+const GH_PATH     = 'Recipe Dashboard.html';
 
 const uid = (p='id') => p + '-' + Math.random().toString(36).slice(2,8);
 
@@ -246,6 +249,27 @@ function loadInitial() {
   }
   if (changed) localStorage.setItem(SEEDS_KEY, JSON.stringify(seeded));
   return data;
+}
+
+/* ---------- GitHub save ---------- */
+async function saveToGitHub(data, token) {
+  const api = `https://api.github.com/repos/${GH_REPO}/contents/${encodeURIComponent(GH_PATH)}`;
+  const meta = await fetch(api, {
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+  }).then(r => r.json());
+  if (!meta.sha) throw new Error('Could not read file from GitHub');
+  const raw = await fetch(meta.download_url).then(r => r.text());
+  const updated = raw.replace(
+    /(<script type="application\/json" id="default-data">\n)[\s\S]*?(\n<\/script>)/,
+    `$1${JSON.stringify(data, null, 2)}\n$2`
+  );
+  const encoded = btoa(unescape(encodeURIComponent(updated)));
+  const res = await fetch(api, {
+    method: 'PUT',
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: 'update recipes', content: encoded, sha: meta.sha })
+  });
+  if (!res.ok) throw new Error('GitHub write failed');
 }
 
 /* ---------- Image-less art: a procedural "plate" SVG keyed off the recipe name ---------- */
@@ -380,14 +404,22 @@ function App() {
   const [query, setQuery] = useState('');
   const [openRecipe, setOpenRecipe] = useState(null); // {tabId, recipeId}
   const [confirmTab, setConfirmTab] = useState(null);
+  const [ghStatus, setGhStatus] = useState('idle'); // idle | saving | saved | error | no-token
+  const [showToken, setShowToken] = useState(false);
+  const [ghToken, setGhToken] = useState(() => localStorage.getItem(GH_TOKEN_KEY) || '');
+  const saveTimer = useRef(null);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    fetch('/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    }).catch(() => {}); // silent if opened as a plain file
+    const token = localStorage.getItem(GH_TOKEN_KEY);
+    if (!token) { setGhStatus('no-token'); return; }
+    clearTimeout(saveTimer.current);
+    setGhStatus('saving');
+    saveTimer.current = setTimeout(() => {
+      saveToGitHub(data, token)
+        .then(() => setGhStatus('saved'))
+        .catch(() => setGhStatus('error'));
+    }, 2000);
   }, [data]);
   useEffect(() => {
     if (activeId) localStorage.setItem(ACTIVE_KEY, activeId);
@@ -557,8 +589,54 @@ function App() {
 
         <footer className="foot mono">
           <span>Everything on this page is editable. Click any text to rename it.</span>
-          <span className="foot-r">⌘ saved locally · {totalRecipes} dishes on file</span>
+          <div className="foot-r">
+            {ghStatus === 'no-token' && (
+              <button className="gh-btn" onClick={() => setShowToken(true)}>Connect GitHub to auto-save</button>
+            )}
+            {ghStatus === 'saving' && <span className="gh-status saving">↑ saving to GitHub…</span>}
+            {ghStatus === 'saved'  && <span className="gh-status saved">✓ saved to GitHub</span>}
+            {ghStatus === 'error'  && <span className="gh-status error" onClick={() => setShowToken(true)}>✗ GitHub save failed — check token</span>}
+            {ghStatus === 'idle'   && <span className="gh-status mute">{totalRecipes} dishes on file</span>}
+            {ghToken && <button className="gh-btn mute" style={{marginLeft:12}} onClick={() => setShowToken(true)}>token</button>}
+          </div>
         </footer>
+        {showToken && (
+          <div className="modal-bg" onClick={() => setShowToken(false)}>
+            <div className="confirm" onClick={e => e.stopPropagation()} style={{maxWidth: 480}}>
+              <h3 className="serif">GitHub token</h3>
+              <p>Create a token at <b>github.com → Settings → Developer settings → Personal access tokens → Fine-grained tokens</b>. Give it <b>Contents: Read and Write</b> access to <b>recipe_dashboard</b>.</p>
+              <input
+                className="modal-url-input mono"
+                type="password"
+                autoFocus
+                placeholder="github_pat_…"
+                defaultValue={ghToken}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    const t = e.target.value.trim();
+                    setGhToken(t);
+                    localStorage.setItem(GH_TOKEN_KEY, t);
+                    setShowToken(false);
+                    setGhStatus('idle');
+                  }
+                }}
+              />
+              <p style={{fontSize:11, color:'var(--mute)'}}>Press Enter to save. Stored only in your browser.</p>
+              <div className="confirm-actions">
+                {ghToken && <button className="btn-danger" onClick={() => { localStorage.removeItem(GH_TOKEN_KEY); setGhToken(''); setGhStatus('no-token'); setShowToken(false); }}>Remove token</button>}
+                <button className="btn-secondary" onClick={() => setShowToken(false)}>Cancel</button>
+                <button className="btn-primary" onClick={() => {
+                  const input = document.querySelector('.confirm input');
+                  const t = input?.value.trim() || '';
+                  setGhToken(t);
+                  localStorage.setItem(GH_TOKEN_KEY, t);
+                  setShowToken(false);
+                  setGhStatus('idle');
+                }}>Save</button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* MODAL */}
@@ -1223,6 +1301,20 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
     color: var(--mute-2);
     pointer-events: none;
   }
+
+  /* ---------- GitHub status ---------- */
+  .gh-btn {
+    font-size: 11px; letter-spacing: 0.06em; color: var(--accent);
+    padding: 4px 8px; border-radius: 6px; border: 1px solid oklch(from var(--accent) l c h / 0.3);
+    transition: background 140ms;
+  }
+  .gh-btn:hover { background: oklch(from var(--accent) l c h / 0.12); }
+  .gh-btn.mute { color: var(--mute-2); border-color: var(--line-soft); }
+  .gh-status { font-size: 11px; letter-spacing: 0.06em; }
+  .gh-status.saving { color: var(--mute); }
+  .gh-status.saved  { color: var(--good); }
+  .gh-status.error  { color: var(--danger); cursor: pointer; }
+  .gh-status.mute   { color: var(--mute-2); }
 
   /* ---------- Responsive ---------- */
   @media (max-width: 900px) {
