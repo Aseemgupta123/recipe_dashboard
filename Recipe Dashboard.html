@@ -656,15 +656,22 @@ function App() {
   };
 
   const visibleRecipes = useMemo(() => {
-    if (!activeTab) return [];
     const q = query.trim().toLowerCase();
-    if (!q) return activeTab.recipes;
-    return activeTab.recipes.filter(r =>
-      r.name.toLowerCase().includes(q) ||
-      r.tag.toLowerCase().includes(q) ||
-      (r.note||'').toLowerCase().includes(q)
+    if (!q) {
+      if (!activeTab) return [];
+      return activeTab.recipes.map(r => ({ recipe: r, tab: activeTab }));
+    }
+    return data.tabs.flatMap(t =>
+      t.recipes
+        .filter(r =>
+          r.name.toLowerCase().includes(q) ||
+          r.tag.toLowerCase().includes(q) ||
+          (r.note||'').toLowerCase().includes(q) ||
+          (r.ingredients||[]).some(i => i.toLowerCase().includes(q))
+        )
+        .map(r => ({ recipe: r, tab: t }))
     );
-  }, [activeTab, query]);
+  }, [activeTab, query, data.tabs]);
 
   const totalRecipes = useMemo(() => data.tabs.reduce((n, t) => n + t.recipes.length, 0), [data]);
 
@@ -751,8 +758,10 @@ function App() {
                   <span className="mono">{activeTab.name.toUpperCase()}</span>
                 </div>
                 <div className="kicker mono" style={{marginTop: 6}}>
-                  {visibleRecipes.length} of {activeTab.recipes.length} dishes
-                  {query && <> · matching "{query}"</>}
+                  {query
+                    ? <>{visibleRecipes.length} result{visibleRecipes.length !== 1 ? 's' : ''} across all cuisines · matching "{query}"</>
+                    : <>{visibleRecipes.length} of {activeTab.recipes.length} dishes</>
+                  }
                 </div>
               </div>
               {canEdit && (
@@ -762,20 +771,20 @@ function App() {
               )}
             </div>
 
-            {activeTab.recipes.length === 0 ? (
+            {activeTab.recipes.length === 0 && !query ? (
               <EmptyState onAdd={()=>addRecipe(activeTab.id)} />
             ) : visibleRecipes.length === 0 ? (
               <NoMatch query={query} onClear={()=>setQuery('')} />
             ) : (
               <ul className="grid">
-                {visibleRecipes.map(r => (
+                {visibleRecipes.map(({ recipe: r, tab: t }) => (
                   <RecipeCard
                     key={r.id}
                     recipe={r}
-                    hue={activeTab.hue}
-                    onOpen={() => setOpenRecipe({ tabId: activeTab.id, recipeId: r.id })}
-                    onRemove={() => removeRecipe(activeTab.id, r.id)}
-                    onChange={(mut) => updateRecipe(activeTab.id, r.id, mut)}
+                    hue={t.hue}
+                    onOpen={() => setOpenRecipe({ tabId: t.id, recipeId: r.id })}
+                    onRemove={() => removeRecipe(t.id, r.id)}
+                    onChange={(mut) => updateRecipe(t.id, r.id, mut)}
                   />
                 ))}
               </ul>
