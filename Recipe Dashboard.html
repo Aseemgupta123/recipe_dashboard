@@ -161,6 +161,27 @@
       ]
     },
     {
+      "id": "t-tv8786",
+      "name": "Asian",
+      "hue": 25,
+      "recipes": [
+        {
+          "id": "r-mfb5n5",
+          "name": "Stir Fry",
+          "time": "30 min",
+          "tag": "New",
+          "note": "Click to add notes or method.",
+          "ingredients": [
+            " Cooked Chicken / Shrimp / Tofu",
+            "Stir fry sauce",
+            "Garlic, ginger"
+          ],
+          "link": "",
+          "image": "https://ecom-su-static-prod.wtrecom.com/images/products/11/LN_723407_BP_11.jpg"
+        }
+      ]
+    },
+    {
       "id": "t-in",
       "name": "Indian",
       "hue": 55,
@@ -221,31 +242,9 @@
           ]
         }
       ]
-    },
-    {
-      "id": "t-tv8786",
-      "name": "Asian",
-      "hue": 25,
-      "recipes": [
-        {
-          "id": "r-mfb5n5",
-          "name": "Stir Fry",
-          "time": "30 min",
-          "tag": "New",
-          "note": "Click to add notes or method.",
-          "ingredients": [
-            " Cooked Chicken / Shrimp / Tofu",
-            "Stir fry sauce",
-            "Garlic, ginger"
-          ],
-          "link": "",
-          "image": "https://ecom-su-static-prod.wtrecom.com/images/products/11/LN_723407_BP_11.jpg"
-        }
-      ]
     }
   ]
 }
-
 </script>
 
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -313,6 +312,17 @@ const SEEDS = [
     id: 'tab-order-2026-05',
     apply(data) {
       const order = ['t-breakfast', 't-69acrv', 't-in', 't-it', 't-desserts'];
+      const tabMap = Object.fromEntries(data.tabs.map(t => [t.id, t]));
+      const sorted = order.map(id => tabMap[id]).filter(Boolean);
+      const rest = data.tabs.filter(t => !order.includes(t.id));
+      data.tabs = [...sorted, ...rest];
+      return data;
+    }
+  },
+  {
+    id: 'tab-order-asian-2026-05',
+    apply(data) {
+      const order = ['t-breakfast', 't-69acrv', 't-tv8786', 't-in', 't-desserts'];
       const tabMap = Object.fromEntries(data.tabs.map(t => [t.id, t]));
       const sorted = order.map(id => tabMap[id]).filter(Boolean);
       const rest = data.tabs.filter(t => !order.includes(t.id));
