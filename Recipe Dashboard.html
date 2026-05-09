@@ -534,6 +534,7 @@ const RecipePlate = React.memo(function RecipePlate({ name, hue, size = 96 }) {
 
 /* ---------- Inline editable text ---------- */
 function Editable({ value, onChange, className, placeholder, as = 'span', maxLen, ariaLabel }) {
+  const editable = React.useContext(EditCtx);
   const ref = useRef(null);
   const Tag = as;
 
@@ -562,17 +563,20 @@ function Editable({ value, onChange, className, placeholder, as = 'span', maxLen
     <Tag
       ref={ref}
       className={className}
-      contentEditable
+      contentEditable={editable}
       suppressContentEditableWarning
       spellCheck={false}
-      onInput={onInput}
-      onKeyDown={onKeyDown}
-      onPaste={onPaste}
-      data-placeholder={placeholder}
+      onInput={editable ? onInput : undefined}
+      onKeyDown={editable ? onKeyDown : undefined}
+      onPaste={editable ? onPaste : undefined}
+      data-placeholder={editable ? placeholder : undefined}
       aria-label={ariaLabel}
     />
   );
 }
+
+/* ---------- Edit context: false when no token is stored ---------- */
+const EditCtx = React.createContext(true);
 
 /* ---------- Icons (minimal line icons) ---------- */
 const Ico = {
@@ -599,6 +603,7 @@ function App() {
   const [ghToken, setGhToken] = useState(() => localStorage.getItem(GH_TOKEN_KEY) || '');
   const [saveStatus, setSaveStatus] = useState('idle'); // idle | saving | saved | error
   const [pullStatus, setPullStatus] = useState('idle'); // idle | pulling | pulled | error
+  const canEdit = !!ghToken;
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -684,6 +689,7 @@ function App() {
   const openR = openRecipe ? data.tabs.find(t=>t.id===openRecipe.tabId)?.recipes.find(r=>r.id===openRecipe.recipeId) : null;
 
   return (
+    <EditCtx.Provider value={canEdit}>
     <div className="page">
       {/* HEADER */}
       <header className="hdr">
@@ -735,17 +741,21 @@ function App() {
                 onChange={(v) => renameTab(t.id, v)}
               />
               <span className="tab-count mono">{t.recipes.length}</span>
-              <button
-                className="tab-x"
-                aria-label={`Remove ${t.name}`}
-                onClick={(e) => { e.stopPropagation(); setConfirmTab(t.id); }}
-              ><Ico.x/></button>
+              {canEdit && (
+                <button
+                  className="tab-x"
+                  aria-label={`Remove ${t.name}`}
+                  onClick={(e) => { e.stopPropagation(); setConfirmTab(t.id); }}
+                ><Ico.x/></button>
+              )}
             </div>
           );
         })}
-        <button className="tab tab-add" onClick={addTab} aria-label="Add cuisine">
-          <Ico.plus /> <span>Add cuisine</span>
-        </button>
+        {canEdit && (
+          <button className="tab tab-add" onClick={addTab} aria-label="Add cuisine">
+            <Ico.plus /> <span>Add cuisine</span>
+          </button>
+        )}
       </nav>
 
       {/* MAIN */}
@@ -763,9 +773,11 @@ function App() {
                   {query && <> · matching "{query}"</>}
                 </div>
               </div>
-              <button className="btn-primary" onClick={()=>addRecipe(activeTab.id)}>
-                <Ico.plus/> <span>New recipe</span>
-              </button>
+              {canEdit && (
+                <button className="btn-primary" onClick={()=>addRecipe(activeTab.id)}>
+                  <Ico.plus/> <span>New recipe</span>
+                </button>
+              )}
             </div>
 
             {activeTab.recipes.length === 0 ? (
@@ -792,7 +804,7 @@ function App() {
         )}
 
         <footer className="foot mono">
-          <span>Everything on this page is editable. Click any text to rename it.</span>
+          <span>{canEdit ? 'Everything on this page is editable. Click any text to rename it.' : 'Read-only — add a GitHub token to edit.'}</span>
           <div className="foot-r">
             <div className="gh-actions">
               <div className="gh-action-group">
@@ -881,14 +893,16 @@ function App() {
         />
       )}
     </div>
+    </EditCtx.Provider>
   );
 }
 
 /* ---------- Recipe card ---------- */
 function RecipeCard({ recipe, hue, onOpen, onRemove, onChange }) {
+  const canEdit = React.useContext(EditCtx);
   const onCardClick = (e) => {
-    // don't open when clicking editable / button areas
-    if (e.target.closest('[contenteditable="true"], button, .no-open')) return;
+    if (e.target.closest('button, .no-open')) return;
+    if (canEdit && e.target.closest('[contenteditable="true"]')) return;
     onOpen();
   };
   return (
@@ -924,9 +938,11 @@ function RecipeCard({ recipe, hue, onOpen, onRemove, onChange }) {
           <span className="meta-open">Open recipe <Ico.arrow/></span>
         </div>
       </div>
-      <button className="card-x no-open" onClick={(e)=>{ e.stopPropagation(); onRemove(); }} aria-label="Remove recipe">
-        <Ico.x/>
-      </button>
+      {canEdit && (
+        <button className="card-x no-open" onClick={(e)=>{ e.stopPropagation(); onRemove(); }} aria-label="Remove recipe">
+          <Ico.x/>
+        </button>
+      )}
     </li>
   );
 }
@@ -974,6 +990,7 @@ function EmptyTabs({ onAdd }) {
 
 /* ---------- Modal: full recipe ---------- */
 function RecipeModal({ recipe, tab, onClose, onChange, onRemove }) {
+  const canEdit = React.useContext(EditCtx);
   const [editingImage, setEditingImage] = useState(false);
   const [editingLink, setEditingLink] = useState(false);
   const ingredients = recipe.ingredients || [];
@@ -1010,10 +1027,12 @@ function RecipeModal({ recipe, tab, onClose, onChange, onRemove }) {
             <span className="modal-cuisine">{tab.name.toUpperCase()}</span>
             <Editable as="span" value={recipe.tag} onChange={v=>onChange(r=>({...r, tag:v}))} maxLen={20}/>
           </div>
-          <button className="modal-art-edit mono" onClick={()=>setEditingImage(v=>!v)}>
-            <Ico.edit/> {recipe.image ? 'Change photo URL' : 'Add photo URL'}
-          </button>
-          {editingImage && (
+          {canEdit && (
+            <button className="modal-art-edit mono" onClick={()=>setEditingImage(v=>!v)}>
+              <Ico.edit/> {recipe.image ? 'Change photo URL' : 'Add photo URL'}
+            </button>
+          )}
+          {canEdit && editingImage && (
             <input
               className="modal-url-input mono"
               type="url"
@@ -1038,11 +1057,13 @@ function RecipeModal({ recipe, tab, onClose, onChange, onRemove }) {
                 <Ico.link/> View source
               </a>
             ) : null}
-            <button className="modal-source-edit mono no-open" onClick={()=>setEditingLink(v=>!v)}>
-              <Ico.edit/> {recipe.link ? 'Edit link' : 'Add source link'}
-            </button>
+            {canEdit && (
+              <button className="modal-source-edit mono no-open" onClick={()=>setEditingLink(v=>!v)}>
+                <Ico.edit/> {recipe.link ? 'Edit link' : 'Add source link'}
+              </button>
+            )}
           </div>
-          {editingLink && (
+          {canEdit && editingLink && (
             <input
               className="modal-url-input mono"
               type="url"
@@ -1071,12 +1092,12 @@ function RecipeModal({ recipe, tab, onClose, onChange, onRemove }) {
                       placeholder="e.g. 2 cups flour"
                       maxLen={120}
                     />
-                    <button className="ing-x" aria-label="Remove ingredient" onClick={()=>removeIng(i)}><Ico.x/></button>
+                    {canEdit && <button className="ing-x" aria-label="Remove ingredient" onClick={()=>removeIng(i)}><Ico.x/></button>}
                   </li>
                 ))}
               </ul>
             )}
-            <button className="ing-add" onClick={addIng}><Ico.plus/> <span>Add ingredient</span></button>
+            {canEdit && <button className="ing-add" onClick={addIng}><Ico.plus/> <span>Add ingredient</span></button>}
           </div>
 
           <div className="modal-section">
@@ -1092,7 +1113,7 @@ function RecipeModal({ recipe, tab, onClose, onChange, onRemove }) {
           </div>
           <div className="modal-actions">
             <button className="btn-secondary" onClick={onClose}>Done</button>
-            <button className="btn-danger" onClick={onRemove}>Delete recipe</button>
+            {canEdit && <button className="btn-danger" onClick={onRemove}>Delete recipe</button>}
           </div>
         </div>
       </div>
