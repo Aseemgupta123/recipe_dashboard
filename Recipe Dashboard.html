@@ -1082,8 +1082,7 @@ function RecipeModal({ recipe, tab, onClose, onChange, onRemove }) {
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', onKey);
-    document.body.style.overflow = 'hidden';
-    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
+    return () => { window.removeEventListener('keydown', onKey); };
   }, [onClose]);
 
   const updateIng = (i, val) => onChange(r => {
@@ -1463,6 +1462,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
     backdrop-filter: blur(4px);
     display: flex; flex-direction: column; align-items: center;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     padding: 24px;
     animation: fade 180ms ease;
   }
