@@ -1460,22 +1460,18 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
     position: fixed; inset: 0; z-index: 60;
     background: oklch(0.10 0.01 60 / 0.7);
     backdrop-filter: blur(4px);
-    display: flex; flex-direction: column; align-items: center;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
+    display: grid; place-items: center;
     padding: 24px;
     animation: fade 180ms ease;
   }
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
   .modal {
     --tab-color: oklch(0.78 0.13 var(--tab-hue, 60));
-    width: min(900px, 100%);
-    margin: auto;
+    width: min(900px, 100%); max-height: 90vh;
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 20px; overflow: hidden;
-    display: grid; grid-template-columns: 320px 1fr;
+    display: grid; grid-template-columns: 320px 1fr; grid-template-rows: minmax(0, 90vh);
     box-shadow: 0 30px 80px rgba(0,0,0,.5);
     animation: pop 220ms cubic-bezier(.2,.8,.2,1);
   }
@@ -1515,7 +1511,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
     background: oklch(from var(--tab-color) l c h / 0.2);
     border: 1px solid oklch(from var(--tab-color) l c h / 0.3);
   }
-  .modal-body { padding: 32px 36px; position: relative; }
+  .modal-body { padding: 32px 36px; position: relative; overflow-y: auto; min-height: 0; }
   .modal-close {
     position: absolute; top: 16px; right: 16px;
     width: 32px; height: 32px; border-radius: 8px;
@@ -1658,9 +1654,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
     .hdr { flex-direction: column; align-items: stretch; gap: 18px; }
     .hdr-right { flex-direction: column; align-items: stretch; gap: 12px; }
     .search { min-width: 0; }
-    .modal { grid-template-columns: 1fr; }
+    .modal { grid-template-columns: 1fr; grid-template-rows: auto; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .modal-art { border-right: 0; border-bottom: 1px solid var(--line); padding: 24px; }
-    .modal-body { padding: 24px; }
+    .modal-body { padding: 24px; overflow-y: visible; min-height: unset; }
     .modal-title { font-size: 28px; }
     .section-head { flex-direction: column; align-items: stretch; gap: 14px; }
     .section-head .btn-primary { align-self: flex-start; }
