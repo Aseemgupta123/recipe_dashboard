@@ -272,7 +272,7 @@
           "time": "30–35 min",
           "tag": "Sabzi",
           "note": "½ hr before: wash bhindi individually and lay on a towel — must be fully dry before cutting. Cut off both ends. Check for bugs (keede) and discard any that are hard to cut. All on low heat throughout. Heat 1 tbsp oil, add onion (big pieces, half the quantity of bhindi) — fry until very very light brown, crucial as they'll keep cooking with the bhindi. Add ¼ tsp hing + 1 tsp jeera. Add bhindi. Add haldi + salt + coriander powder + saunf + aamchur. Mix and put the lid on — just a slight glaze, that's all. Check and mix gently every 5 min. Takes 15–20 min total. For bhindi aloo: separately fry aloo (peeled, small pieces, not boiled) on medium heat with a little oil/ghee for ~10 min, keep mixing. Stir into the bhindi just before it's done.",
-          "image": "https://images.unsplash.com/photo-1425543103986-22abb7d7e8d2?w=800",
+          "image": "https://cookilicious.com/wp-content/uploads/2025/12/aloo-bhindi-recipe00016-scaled.jpg",
           "gallery": [
             "https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/bhindi-aloo-handwritten-1.jpg",
             "https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/bhindi-aloo-handwritten-2.jpg"
@@ -316,7 +316,7 @@
           "time": "Overnight + 45 min",
           "tag": "Dal",
           "note": "Soak dal and rajma together overnight. In the morning wash again — they'll feel slightly rougher than expected. Pressure cook with 3½–4 inches of water above the dal, salt, 2 bay leaves and ½ katori finely chopped onion. 1 whistle then simmer 20 min. Dal must be totally soft, no al dente. Remove any floating black water from the top. In a big deep pan heat 3 tsp oil or ghee. Add 1 tsp jeera saabut. Add 1½–2 katori finely chopped onion, fry till brown. Add ginger garlic paste + deggi mirch. Add tomato puree, cook on high heat 2 more min. Add dal makhani masala if available (2–3 tsp), then add all the cooked dal. Add butter, check salt, add kasouri methi crushed in hand. Simmer 10–12 min.",
-          "image": "https://images.unsplash.com/photo-1727018742095-14c9a05aa71a?w=800",
+          "image": "https://www.seriouseats.com/thmb/tGrBxT3TpXraGaYpoMMszbQyz2o=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/20241121-SEA-DalMakhani-QiAi-Hero4-39-52dfa719549248f88ef8c536411962b8.jpg",
           "gallery": [
             "https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/dal-makhani-handwritten-1.jpg",
             "https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/dal-makhani-handwritten-2.jpg"
@@ -763,24 +763,6 @@ const SEEDS = [
       } else {
         tab.recipes.push(recipe);
       }
-      return data;
-    }
-  },
-  {
-    id: 'dosa-batter-2026-05',
-    apply(data) {
-      const tab = data.tabs.find(t => t.id === 't-in');
-      if (!tab || tab.recipes.some(r => r.id === 'r-dosa-batter')) return data;
-      const dalIdx = tab.recipes.findIndex(r => r.id === 'r-dal-makhani');
-      const recipe = {
-        id: 'r-dosa-batter', name: 'Dosa Batter', time: 'Overnight + 8–12 hr ferment', tag: 'Batter',
-        note: "Soak rice and urad dal separately for 5–6 hours in cold water (or 3–4 hrs in warm). They're ready when rice breaks easily and urad dal snaps under a nail. Grind together in a grinder with salt and a little water — don't add too much water. Pour into a large vessel, cover with a plate, and leave at room temperature for 8–12 hours to ferment. The batter will rise about an inch and smell slightly sour. Once fermented it's ready to use. Store in the fridge after that.",
-        image: 'https://images.unsplash.com/photo-1694849789325-914b71ab4075?w=800',
-        gallery: ['https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/coconut-chutney-handwritten-1.jpg'],
-        ingredients: ['2 glasses rice', '1 glass urad dal (broken)', 'Salt to taste', 'Water — for soaking and grinding (not too much)']
-      };
-      if (dalIdx >= 0) tab.recipes.splice(dalIdx, 0, recipe);
-      else tab.recipes.push(recipe);
       return data;
     }
   },
