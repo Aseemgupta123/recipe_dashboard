@@ -339,6 +339,28 @@
           ]
         },
         {
+          "id": "r-jeera-aloo",
+          "name": "Jeera Aloo",
+          "time": "30 min",
+          "tag": "Sabzi",
+          "note": "Pressure cook 4 potatoes fully covered in water — 10 whistles, then let the steam release on its own. Test with a knife: it should go in smoothly, else give more whistles. Peel and cut into squares. Heat oil, add ⅙ tsp hing and 2 tsp jeera. Once jeera turns light brown, add potatoes + namak + 4 tsp coriander powder. Pan fry till potatoes become brown. Towards the end add 1 tsp garam masala + 2 tsp aamchur. Finish with hara dhania.",
+          "image": "https://images.unsplash.com/photo-1651959642943-22431d6f7267?w=800",
+          "gallery": [
+            "https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/jeera-aloo-handwritten-1.jpg"
+          ],
+          "ingredients": [
+            "4 potatoes",
+            "Oil",
+            "⅙ tsp hing (asafoetida)",
+            "2 tsp jeera (cumin seeds)",
+            "Salt (namak) to taste",
+            "4 tsp coriander powder",
+            "1 tsp garam masala",
+            "2 tsp aamchur (dry mango powder)",
+            "Hara dhania (fresh coriander) — to finish"
+          ]
+        },
+        {
           "id": "r-7iddur",
           "name": "Coconut Chutney",
           "time": "10 min",
@@ -763,6 +785,42 @@ const SEEDS = [
       } else {
         tab.recipes.push(recipe);
       }
+      return data;
+    }
+  },
+  {
+    id: 'jeera-aloo-2026-05',
+    apply(data) {
+      const tab = data.tabs.find(t => t.id === 't-in');
+      if (!tab || tab.recipes.some(r => r.id === 'r-jeera-aloo')) return data;
+      const coconutIdx = tab.recipes.findIndex(r => r.id === 'r-7iddur');
+      const recipe = {
+        id: 'r-jeera-aloo', name: 'Jeera Aloo', time: '30 min', tag: 'Sabzi',
+        note: "Pressure cook 4 potatoes fully covered in water — 10 whistles, then let the steam release on its own. Test with a knife: it should go in smoothly, else give more whistles. Peel and cut into squares. Heat oil, add ⅙ tsp hing and 2 tsp jeera. Once jeera turns light brown, add potatoes + namak + 4 tsp coriander powder. Pan fry till potatoes become brown. Towards the end add 1 tsp garam masala + 2 tsp aamchur. Finish with hara dhania.",
+        image: 'https://images.unsplash.com/photo-1651959642943-22431d6f7267?w=800',
+        gallery: ['https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/jeera-aloo-handwritten-1.jpg'],
+        ingredients: ['4 potatoes', 'Oil', '⅙ tsp hing (asafoetida)', '2 tsp jeera (cumin seeds)', 'Salt (namak) to taste', '4 tsp coriander powder', '1 tsp garam masala', '2 tsp aamchur (dry mango powder)', 'Hara dhania (fresh coriander) — to finish']
+      };
+      if (coconutIdx >= 0) tab.recipes.splice(coconutIdx, 0, recipe);
+      else tab.recipes.push(recipe);
+      return data;
+    }
+  },
+  {
+    id: 'dosa-batter-2026-05',
+    apply(data) {
+      const tab = data.tabs.find(t => t.id === 't-in');
+      if (!tab || tab.recipes.some(r => r.id === 'r-dosa-batter')) return data;
+      const dalIdx = tab.recipes.findIndex(r => r.id === 'r-dal-makhani');
+      const recipe = {
+        id: 'r-dosa-batter', name: 'Dosa Batter', time: 'Overnight + 8–12 hr ferment', tag: 'Batter',
+        note: "Soak rice and urad dal separately for 5–6 hours in cold water (or 3–4 hrs in warm). They're ready when rice breaks easily and urad dal snaps under a nail. Grind together in a grinder with salt and a little water — don't add too much water. Pour into a large vessel, cover with a plate, and leave at room temperature for 8–12 hours to ferment. The batter will rise about an inch and smell slightly sour. Once fermented it's ready to use. Store in the fridge after that.",
+        image: 'https://images.unsplash.com/photo-1694849789325-914b71ab4075?w=800',
+        gallery: ['https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/coconut-chutney-handwritten-1.jpg'],
+        ingredients: ['2 glasses rice', '1 glass urad dal (broken)', 'Salt to taste', 'Water — for soaking and grinding (not too much)']
+      };
+      if (dalIdx >= 0) tab.recipes.splice(dalIdx, 0, recipe);
+      else tab.recipes.push(recipe);
       return data;
     }
   },
