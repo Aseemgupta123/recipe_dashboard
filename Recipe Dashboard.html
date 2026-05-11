@@ -295,12 +295,27 @@
         },
         {
           "id": "r-7iddur",
-          "name": "Coconut chutney",
-          "time": "30 min",
-          "tag": "New",
-          "note": "Click to add notes or method.",
-          "ingredients": [],
-          "link": "",
+          "name": "Coconut Chutney",
+          "time": "10 min",
+          "tag": "Chutney",
+          "note": "Grind coconut, ginger, green chili, coriander leaf, jeera powder and salt together with a little water — don't add too much water. For the tadka: heat oil, add fried gram (chana dal), mustard seeds and kadi patta, let them splutter, then pour over the chutney.",
+          "ingredients": [
+            "Coconut",
+            "½ inch ginger",
+            "½ green chili",
+            "Coriander leaf (handful)",
+            "½ tsp jeera powder",
+            "Salt to taste",
+            "Little water — for grinding",
+            "— TADKA —",
+            "Oil",
+            "Fried gram (chana dal)",
+            "Mustard seeds",
+            "Kadi patta (curry leaves)"
+          ],
+          "gallery": [
+            "https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/coconut-chutney-handwritten-1.jpg"
+          ],
           "image": "https://www.indianhealthyrecipes.com/wp-content/uploads/2022/05/coconut-chutney-recipe.jpg"
         }
       ]
@@ -702,6 +717,23 @@ const SEEDS = [
         tab.recipes.splice(coconutIdx, 0, recipe);
       } else {
         tab.recipes.push(recipe);
+      }
+      return data;
+    }
+  },
+  {
+    id: 'coconut-chutney-2026-05',
+    apply(data) {
+      for (const tab of data.tabs) {
+        const r = tab.recipes?.find(r => r.id === 'r-7iddur');
+        if (r) {
+          r.name = 'Coconut Chutney';
+          r.time = '10 min';
+          r.tag = 'Chutney';
+          r.note = "Grind coconut, ginger, green chili, coriander leaf, jeera powder and salt together with a little water — don't add too much water. For the tadka: heat oil, add fried gram (chana dal), mustard seeds and kadi patta, let them splutter, then pour over the chutney.";
+          r.ingredients = ['Coconut', '½ inch ginger', '½ green chili', 'Coriander leaf (handful)', '½ tsp jeera powder', 'Salt to taste', 'Little water — for grinding', '— TADKA —', 'Oil', 'Fried gram (chana dal)', 'Mustard seeds', 'Kadi patta (curry leaves)'];
+          r.gallery = ['https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/coconut-chutney-handwritten-1.jpg'];
+        }
       }
       return data;
     }
