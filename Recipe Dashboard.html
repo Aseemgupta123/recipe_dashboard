@@ -641,6 +641,21 @@ const SEEDS = [
     }
   },
   {
+    id: 'pulao-gallery-2026-05',
+    apply(data) {
+      for (const tab of data.tabs) {
+        const pulao = tab.recipes?.find(r => r.id === 'r8');
+        if (pulao && !pulao.gallery) {
+          pulao.gallery = [
+            'https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/pulao-handwritten-1.jpg',
+            'https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/pulao-handwritten-2.jpg'
+          ];
+        }
+      }
+      return data;
+    }
+  },
+  {
     id: 'desserts-flan-2026-05',
     apply(data) {
       const flan = {
