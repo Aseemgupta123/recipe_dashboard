@@ -294,6 +294,34 @@
           ]
         },
         {
+          "id": "r-dal-makhani",
+          "name": "Dal Makhani",
+          "time": "Overnight + 45 min",
+          "tag": "Dal",
+          "note": "Soak dal and rajma together overnight. In the morning wash again — they'll feel slightly rougher than expected. Pressure cook with 3½–4 inches of water above the dal, salt, 2 bay leaves and ½ katori finely chopped onion. 1 whistle then simmer 20 min. Dal must be totally soft, no al dente. Remove any floating black water from the top. In a big deep pan heat 3 tsp oil or ghee. Add 1 tsp jeera saabut. Add 1½–2 katori finely chopped onion, fry till brown. Add ginger garlic paste + deggi mirch. Add tomato puree, cook on high heat 2 more min. Add dal makhani masala if available (2–3 tsp), then add all the cooked dal. Add butter, check salt, add kasouri methi crushed in hand. Simmer 10–12 min.",
+          "image": "https://images.unsplash.com/photo-1727018742095-14c9a05aa71a?w=800",
+          "gallery": [
+            "https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/dal-makhani-handwritten-1.jpg",
+            "https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/dal-makhani-handwritten-2.jpg"
+          ],
+          "ingredients": [
+            "2 katori urad dal (whole black lentils)",
+            "¼ katori rajma (kidney beans)",
+            "Salt to taste",
+            "2 bay leaves",
+            "½ katori onion, finely chopped — for pressure cooker",
+            "3 tsp oil or ghee",
+            "1 tsp jeera saabut (whole cumin seeds)",
+            "3 tsp ginger garlic paste",
+            "1 tsp deggi mirch",
+            "1½–2 katori onion, finely chopped — for the pan",
+            "1 katori tomato puree",
+            "2–3 tsp dal makhani masala (if available)",
+            "1 inch sq butter",
+            "1½ tsp kasouri methi — crushed in hand"
+          ]
+        },
+        {
           "id": "r-7iddur",
           "name": "Coconut Chutney",
           "time": "10 min",
@@ -718,6 +746,27 @@ const SEEDS = [
       } else {
         tab.recipes.push(recipe);
       }
+      return data;
+    }
+  },
+  {
+    id: 'dal-makhani-2026-05',
+    apply(data) {
+      const tab = data.tabs.find(t => t.id === 't-in');
+      if (!tab || tab.recipes.some(r => r.id === 'r-dal-makhani')) return data;
+      const coconutIdx = tab.recipes.findIndex(r => r.id === 'r-7iddur');
+      const recipe = {
+        id: 'r-dal-makhani', name: 'Dal Makhani', time: 'Overnight + 45 min', tag: 'Dal',
+        note: "Soak dal and rajma together overnight. In the morning wash again — they'll feel slightly rougher than expected. Pressure cook with 3½–4 inches of water above the dal, salt, 2 bay leaves and ½ katori finely chopped onion. 1 whistle then simmer 20 min. Dal must be totally soft, no al dente. Remove any floating black water from the top. In a big deep pan heat 3 tsp oil or ghee. Add 1 tsp jeera saabut. Add 1½–2 katori finely chopped onion, fry till brown. Add ginger garlic paste + deggi mirch. Add tomato puree, cook on high heat 2 more min. Add dal makhani masala if available (2–3 tsp), then add all the cooked dal. Add butter, check salt, add kasouri methi crushed in hand. Simmer 10–12 min.",
+        image: 'https://images.unsplash.com/photo-1727018742095-14c9a05aa71a?w=800',
+        gallery: [
+          'https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/dal-makhani-handwritten-1.jpg',
+          'https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/dal-makhani-handwritten-2.jpg'
+        ],
+        ingredients: ['2 katori urad dal (whole black lentils)', '¼ katori rajma (kidney beans)', 'Salt to taste', '2 bay leaves', '½ katori onion, finely chopped — for pressure cooker', '3 tsp oil or ghee', '1 tsp jeera saabut (whole cumin seeds)', '3 tsp ginger garlic paste', '1 tsp deggi mirch', '1½–2 katori onion, finely chopped — for the pan', '1 katori tomato puree', '2–3 tsp dal makhani masala (if available)', '1 inch sq butter', '1½ tsp kasouri methi — crushed in hand']
+      };
+      if (coconutIdx >= 0) tab.recipes.splice(coconutIdx, 0, recipe);
+      else tab.recipes.push(recipe);
       return data;
     }
   },
