@@ -271,8 +271,8 @@
           "name": "Bhindi Aloo",
           "time": "30–35 min",
           "tag": "Sabzi",
-          "note": "½ hr before: wash bhindi individually and lay on a towel — must be fully dry before cutting. Cut off both ends. Check for bugs (keede). Discard any that are hard to cut.\n\nAll on low heat throughout. Heat 1 tbsp oil, add onion (big pieces, half the quantity of bhindi) — fry until very very light brown, crucial as they'll keep cooking with the bhindi. Add ¼ tsp hing + 1 tsp jeera. Add bhindi. Add haldi + salt + coriander powder + saunf + aamchur. Mix and put the lid on — just a slight glaze, that's all. Check and mix gently every 5 min. Takes 15–20 min total.\n\nFor the aloo: separately fry aloo (peeled, small pieces, not boiled) on medium heat with a little oil/ghee for ~10 min, keep mixing. Stir into the bhindi just before it's done.",
-          "image": "https://images.unsplash.com/photo-1645696301019-35adcc18cbb1?w=800",
+          "note": "½ hr before: wash bhindi individually and lay on a towel — must be fully dry before cutting. Cut off both ends. Check for bugs (keede) and discard any that are hard to cut. All on low heat throughout. Heat 1 tbsp oil, add onion (big pieces, half the quantity of bhindi) — fry until very very light brown, crucial as they'll keep cooking with the bhindi. Add ¼ tsp hing + 1 tsp jeera. Add bhindi. Add haldi + salt + coriander powder + saunf + aamchur. Mix and put the lid on — just a slight glaze, that's all. Check and mix gently every 5 min. Takes 15–20 min total. For bhindi aloo: separately fry aloo (peeled, small pieces, not boiled) on medium heat with a little oil/ghee for ~10 min, keep mixing. Stir into the bhindi just before it's done.",
+          "image": "https://images.unsplash.com/photo-1425543103986-22abb7d7e8d2?w=800",
           "gallery": [
             "https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/bhindi-aloo-handwritten-1.jpg",
             "https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/bhindi-aloo-handwritten-2.jpg"
@@ -676,8 +676,8 @@ const SEEDS = [
       const coconutIdx = tab.recipes.findIndex(r => r.id === 'r-7iddur');
       const recipe = {
         id: 'r-bhindi-aloo', name: 'Bhindi Aloo', time: '30–35 min', tag: 'Sabzi',
-        note: "½ hr before: wash bhindi individually and lay on a towel — must be fully dry before cutting. Cut off both ends. Check for bugs (keede). Discard any that are hard to cut.\n\nAll on low heat throughout. Heat 1 tbsp oil, add onion (big pieces, half the quantity of bhindi) — fry until very very light brown, crucial as they'll keep cooking with the bhindi. Add ¼ tsp hing + 1 tsp jeera. Add bhindi. Add haldi + salt + coriander powder + saunf + aamchur. Mix and put the lid on — just a slight glaze, that's all. Check and mix gently every 5 min. Takes 15–20 min total.\n\nFor the aloo: separately fry aloo (peeled, small pieces, not boiled) on medium heat with a little oil/ghee for ~10 min, keep mixing. Stir into the bhindi just before it's done.",
-        image: 'https://images.unsplash.com/photo-1645696301019-35adcc18cbb1?w=800',
+        note: "½ hr before: wash bhindi individually and lay on a towel — must be fully dry before cutting. Cut off both ends. Check for bugs (keede) and discard any that are hard to cut. All on low heat throughout. Heat 1 tbsp oil, add onion (big pieces, half the quantity of bhindi) — fry until very very light brown, crucial as they'll keep cooking with the bhindi. Add ¼ tsp hing + 1 tsp jeera. Add bhindi. Add haldi + salt + coriander powder + saunf + aamchur. Mix and put the lid on — just a slight glaze, that's all. Check and mix gently every 5 min. Takes 15–20 min total. For bhindi aloo: separately fry aloo (peeled, small pieces, not boiled) on medium heat with a little oil/ghee for ~10 min, keep mixing. Stir into the bhindi just before it's done.",
+        image: 'https://images.unsplash.com/photo-1425543103986-22abb7d7e8d2?w=800',
         gallery: [
           'https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/bhindi-aloo-handwritten-1.jpg',
           'https://raw.githubusercontent.com/Aseemgupta123/recipe_dashboard/main/HandwrittenGallery/bhindi-aloo-handwritten-2.jpg'
@@ -702,6 +702,19 @@ const SEEDS = [
         tab.recipes.splice(coconutIdx, 0, recipe);
       } else {
         tab.recipes.push(recipe);
+      }
+      return data;
+    }
+  },
+  {
+    id: 'bhindi-aloo-fix-2026-05',
+    apply(data) {
+      for (const tab of data.tabs) {
+        const r = tab.recipes?.find(r => r.id === 'r-bhindi-aloo');
+        if (r) {
+          r.image = 'https://images.unsplash.com/photo-1425543103986-22abb7d7e8d2?w=800';
+          r.note = "½ hr before: wash bhindi individually and lay on a towel — must be fully dry before cutting. Cut off both ends. Check for bugs (keede) and discard any that are hard to cut. All on low heat throughout. Heat 1 tbsp oil, add onion (big pieces, half the quantity of bhindi) — fry until very very light brown, crucial as they'll keep cooking with the bhindi. Add ¼ tsp hing + 1 tsp jeera. Add bhindi. Add haldi + salt + coriander powder + saunf + aamchur. Mix and put the lid on — just a slight glaze, that's all. Check and mix gently every 5 min. Takes 15–20 min total. For bhindi aloo: separately fry aloo (peeled, small pieces, not boiled) on medium heat with a little oil/ghee for ~10 min, keep mixing. Stir into the bhindi just before it's done.";
+        }
       }
       return data;
     }
