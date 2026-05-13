@@ -1103,6 +1103,17 @@ async function pullFromGitHub(token) {
   return JSON.parse(match[1]);
 }
 
+async function pullFromGitHubPublic() {
+  const url = `https://raw.githubusercontent.com/${GH_REPO}/main/${encodeURIComponent(GH_PATH)}?t=${Date.now()}`;
+  const raw = await fetch(url, { cache: 'no-store' }).then(r => {
+    if (!r.ok) throw new Error('Could not fetch from GitHub');
+    return r.text();
+  });
+  const match = raw.match(/<script type="application\/json" id="default-data">\n([\s\S]*?)\n<\/script>/);
+  if (!match) throw new Error('Could not parse data from GitHub file');
+  return JSON.parse(match[1]);
+}
+
 /* ---------- Image-less art: a procedural "plate" SVG keyed off the recipe name ---------- */
 function hashStr(s){
   let h = 2166136261 >>> 0;
@@ -1246,6 +1257,16 @@ function App() {
   const [saveStatus, setSaveStatus] = useState('idle'); // idle | saving | saved | error
   const [pullStatus, setPullStatus] = useState('idle'); // idle | pulling | pulled | error
   const canEdit = !!ghToken;
+
+  // Auto-pull latest data on mount: use token if available, else fetch public raw URL
+  useEffect(() => {
+    const token = localStorage.getItem(GH_TOKEN_KEY);
+    const doFetch = token ? pullFromGitHub(token) : pullFromGitHubPublic();
+    doFetch.then(fetched => {
+      setData(fetched);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(fetched));
+    }).catch(() => {}); // silently fall back to whatever loadInitial loaded
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
