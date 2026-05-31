@@ -290,6 +290,22 @@
           ]
         },
         {
+          "id": "bbq-10",
+          "name": "Grilled Zucchini",
+          "time": "10 min",
+          "tag": "Veggie",
+          "note": "Slice lengthways into 5mm planks — too thin and they fall apart, too thick and the inside stays raw. Brush both sides generously with olive oil and season well. Grill on medium-high heat for 3–4 mins per side until you get clear char marks and the flesh is tender but not mushy. Don't move them while grilling — let them release naturally. Finish with a squeeze of lemon and torn fresh herbs (basil or mint work great). Optional: rub with a halved garlic clove while still hot.",
+          "image": "https://images.unsplash.com/photo-1563227812-0ea4c22e6cc8?w=800",
+          "ingredients": [
+            "2–3 zucchini (courgettes), sliced lengthways into 5mm planks",
+            "2 tbsp olive oil",
+            "Salt and black pepper",
+            "Juice of ½ lemon",
+            "Fresh basil or mint — to finish",
+            "1 garlic clove, halved — optional"
+          ]
+        },
+        {
           "id": "bbq-9",
           "name": "Pico de Gallo",
           "time": "15 min",
@@ -1218,6 +1234,29 @@ const SEEDS = [
           cocktailTab.recipes.push(r);
         }
       }
+      return data;
+    }
+  },
+  {
+    id: 'bbq-zucchini-2026-05',
+    apply(data) {
+      const tab = data.tabs.find(t => t.name === 'BBQ');
+      if (!tab) return data;
+      if (tab.recipes.some(r => r.id === 'bbq-10')) return data;
+      const recipe = {
+        id: 'bbq-10', name: 'Grilled Zucchini', time: '10 min', tag: 'Veggie',
+        note: "Slice lengthways into 5mm planks — too thin and they fall apart, too thick and the inside stays raw. Brush both sides generously with olive oil and season well. Grill on medium-high heat for 3–4 mins per side until you get clear char marks and the flesh is tender but not mushy. Don't move them while grilling — let them release naturally. Finish with a squeeze of lemon and torn fresh herbs (basil or mint work great). Optional: rub with a halved garlic clove while still hot.",
+        image: 'https://images.unsplash.com/photo-1563227812-0ea4c22e6cc8?w=800',
+        ingredients: [
+          '2–3 zucchini (courgettes), sliced lengthways into 5mm planks',
+          '2 tbsp olive oil',
+          'Salt and black pepper',
+          'Juice of ½ lemon',
+          'Fresh basil or mint — to finish',
+          '1 garlic clove, halved — optional'
+        ]
+      };
+      tab.recipes.unshift(recipe);
       return data;
     }
   }
